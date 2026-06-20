@@ -166,9 +166,7 @@ function(qorvo_install_target target)
     OPTIONAL
     EXPORT ${target}-config
     ARCHIVE DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/${target}
-            FILE_SET HEADERS
-            DESTINATION include/${target}
-  )
+            )
 
   install(EXPORT ${target}-config DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/${target}/cmake)
 endfunction()
@@ -558,3 +556,4 @@ function(qorvo_add_static_library_bundle bundle)
 
   add_dependencies(${bundle}_target ${static_libs})
 endfunction()
+

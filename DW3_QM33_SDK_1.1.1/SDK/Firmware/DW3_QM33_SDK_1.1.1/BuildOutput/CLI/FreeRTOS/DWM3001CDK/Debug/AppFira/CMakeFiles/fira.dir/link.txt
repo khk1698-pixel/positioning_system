@@ -1,0 +1,2 @@
+C:\GnuToolsArmForEmbedded\gcc-arm-none-eabi-10.3-2021.10\bin\bin\arm-none-eabi-ar.exe qc libfira.a CMakeFiles/fira.dir/fira_dw3000.c.obj CMakeFiles/fira.dir/common_fira.c.obj CMakeFiles/fira.dir/fira_app.c.obj CMakeFiles/fira.dir/fira_fn.c.obj
+C:\GnuToolsArmForEmbedded\gcc-arm-none-eabi-10.3-2021.10\bin\bin\arm-none-eabi-ranlib.exe libfira.a

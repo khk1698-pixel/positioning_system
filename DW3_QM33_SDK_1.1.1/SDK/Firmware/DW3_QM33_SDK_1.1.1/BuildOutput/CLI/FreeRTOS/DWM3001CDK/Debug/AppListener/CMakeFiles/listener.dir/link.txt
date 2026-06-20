@@ -1,0 +1,2 @@
+C:\GnuToolsArmForEmbedded\gcc-arm-none-eabi-10.3-2021.10\bin\bin\arm-none-eabi-ar.exe qc liblistener.a CMakeFiles/listener.dir/listener.c.obj CMakeFiles/listener.dir/task_listener.c.obj CMakeFiles/listener.dir/listener_fn.c.obj
+C:\GnuToolsArmForEmbedded\gcc-arm-none-eabi-10.3-2021.10\bin\bin\arm-none-eabi-ranlib.exe liblistener.a

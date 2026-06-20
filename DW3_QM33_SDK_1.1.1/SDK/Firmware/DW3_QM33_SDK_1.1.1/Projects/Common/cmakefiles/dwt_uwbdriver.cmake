@@ -53,7 +53,5 @@ install(
   OPTIONAL
   EXPORT uwbdriver-config
   ARCHIVE DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/uwbdriver
-          FILE_SET HEADERS
-          DESTINATION include/uwbdriver
 )
 install(EXPORT uwbdriver-config DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/uwbdriver/cmake)

@@ -1,0 +1,2 @@
+C:\GnuToolsArmForEmbedded\gcc-arm-none-eabi-10.3-2021.10\bin\bin\arm-none-eabi-ar.exe qc libInterface.a CMakeFiles/Interface.dir/Src/InterfUsb.c.obj
+C:\GnuToolsArmForEmbedded\gcc-arm-none-eabi-10.3-2021.10\bin\bin\arm-none-eabi-ranlib.exe libInterface.a

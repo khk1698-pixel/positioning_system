@@ -13,9 +13,7 @@ if(COMMAND qorvo_install_target)
     OPTIONAL
     EXPORT mac_config_itf-config
     ARCHIVE DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/mac_config_itf
-            FILE_SET HEADERS
-            DESTINATION include/mac_config_itf
-  )
+            )
   install(EXPORT mac_config_itf-config
           DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/mac_config_itf/cmake
   )
@@ -31,10 +29,9 @@ if(COMMAND qorvo_install_target)
     OPTIONAL
     EXPORT mac_config-config
     ARCHIVE DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/mac_config
-            FILE_SET HEADERS
-            DESTINATION include/mac_config
-  )
+            )
 
   install(EXPORT mac_config-config DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/mac_config/cmake)
 
 endif()
+

@@ -52,9 +52,7 @@ if(CONFIG_QPLATFORM_IMPL_QM33_QHAL_ZEPHYR OR CONFIG_QPLATFORM_IMPL_QM33_QHAL_NON
     OPTIONAL
     EXPORT qplatform_deca_compat-config
     ARCHIVE DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/qplatform_deca_compat
-            FILE_SET HEADERS
-            DESTINATION include/qplatform_deca_compat
-  )
+            )
   install(EXPORT qplatform_deca_compat-config
           DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/qplatform_deca_compat/cmake
   )
@@ -74,7 +72,6 @@ install(
   OPTIONAL
   EXPORT qplatform-config
   ARCHIVE DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/qplatform
-          FILE_SET HEADERS
-          DESTINATION include/qplatform
-)
+          )
 install(EXPORT qplatform-config DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/qplatform/cmake)
+

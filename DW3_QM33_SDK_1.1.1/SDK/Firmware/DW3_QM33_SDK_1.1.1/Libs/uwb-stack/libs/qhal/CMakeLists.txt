@@ -44,7 +44,6 @@ install(
   TARGETS qhal
   EXPORT qhal-config
   ARCHIVE DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/qhal
-          FILE_SET HEADERS
-          DESTINATION include/qhal
-)
+          )
 install(EXPORT qhal-config DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/qhal/cmake)
+

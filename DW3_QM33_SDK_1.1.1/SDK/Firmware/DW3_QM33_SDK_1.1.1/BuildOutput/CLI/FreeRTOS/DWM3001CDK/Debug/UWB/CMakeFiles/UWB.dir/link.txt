@@ -1,0 +1,2 @@
+C:\GnuToolsArmForEmbedded\gcc-arm-none-eabi-10.3-2021.10\bin\bin\arm-none-eabi-ar.exe qc libUWB.a CMakeFiles/UWB.dir/uwb_translate.c.obj CMakeFiles/UWB.dir/uwb_utils.c.obj CMakeFiles/UWB.dir/mcps_crypto.c.obj
+C:\GnuToolsArmForEmbedded\gcc-arm-none-eabi-10.3-2021.10\bin\bin\arm-none-eabi-ranlib.exe libUWB.a

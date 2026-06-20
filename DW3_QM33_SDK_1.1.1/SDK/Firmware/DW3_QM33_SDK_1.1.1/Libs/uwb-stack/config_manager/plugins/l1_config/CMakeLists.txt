@@ -121,9 +121,7 @@ install(
   OPTIONAL
   EXPORT l1_config_itf-config
   ARCHIVE DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/l1_config_itf
-          FILE_SET HEADERS
-          DESTINATION include/l1_config_itf
-)
+          )
 
 # Install the cmake file used to import the library
 install(EXPORT l1_config_itf-config
@@ -171,8 +169,7 @@ install(
   OPTIONAL
   EXPORT l1_config-config
   ARCHIVE DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/l1_config
-          FILE_SET HEADERS
-          DESTINATION include/l1_config
-)
+          )
 
 install(EXPORT l1_config-config DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/l1_config/cmake)
+

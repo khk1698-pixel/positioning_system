@@ -29,13 +29,40 @@
 #include "qmalloc.h"
 #include "uwb_convert.h"
 #include "uwb_translate.h"
+#include <math.h>
 
 
 static struct uwbmac_context *uwbmac_ctx = NULL;
 static struct fira_context fira_ctx;
 
 #define STR_SIZE (256)
+#define PARKING_THRESHOLD_CM  100
 #define TEN_TO_6 1000000
+#define ERROR_LIMIT           3    /* 연속 오류 허용 횟수 */
+#define R1_X  0.0f
+#define R1_Y  0.0f
+#define R1_Z  140.0f
+#define R2_X  100.0f
+#define R2_Y  0.0f
+#define R2_Z  140.0f
+#define R3_X  50.0f
+#define R3_Y  0.0f
+#define R3_Z  53.4f
+
+#define X_MIN_CM   -50.0f
+#define X_MAX_CM   150.0f
+#define Y_MIN_CM   0.0f
+#define Y_MAX_CM   500.0f
+
+/* ========== 필터 버전 선택 (하나만 주석 해제) ========== */
+// #define FILTER_V1_OUTLIER_ONLY
+// #define FILTER_V2_EMA_ONLY
+// #define FILTER_V3_OUTLIER_EMA
+// #define FILTER_V4_MEDIAN_ONLY
+// #define FILTER_V5_ENSEMBLE
+// #define FILTER_V6_KALMAN_ONLY
+#define FILTER_V7_FULL
+/* 모두 주석이면 필터 없음 (기본값) */
 
 static uint32_t session_id = 42;
 static uint32_t session_handle = 0;
@@ -45,6 +72,57 @@ static void fira_range_diagnostics_ntf_cb(const struct fira_ranging_info *info, 
 static void fira_session_status_ntf_cb(const struct fira_session_status_ntf_content *status, void *user_data);
 static void fira_helper_ntfs_cb(enum fira_helper_cb_type cb_type, const void *content, void *user_data);
 static struct string_measurement output_result;
+static int error_count[4] = {0, 0, 0, 0};  /* 주소별 오류 카운터 [0]=addr0, [1]=addr1, [2]=addr2 */
+static int g_dist_r1 = -1;
+static int g_dist_r2 = -1;
+static int g_dist_r3 = -1;
+
+/* 필터용 전역변수 */
+#define OUTLIER_THRESHOLD_CM  20
+#define MEDIAN_SIZE           5
+#define EMA_ALPHA             0.3f
+#define KF_Q                  1.0f
+#define KF_R                  10.0f
+
+static int   g_prev_r1 = -1;
+static int   g_prev_r2 = -1;
+static int   g_prev_r3 = -1;
+
+static int   g_buf_r1[MEDIAN_SIZE];
+static int   g_buf_r2[MEDIAN_SIZE];
+static int   g_buf_r3[MEDIAN_SIZE];
+static int   g_buf_r1_idx = 0;
+static int   g_buf_r2_idx = 0;
+static int   g_buf_r3_idx = 0;
+static bool  g_buf_r1_full = false;
+static bool  g_buf_r2_full = false;
+static bool  g_buf_r3_full = false;
+
+static float g_ema_r1 __attribute__((unused)) = -1.0f;
+static float g_ema_r2 __attribute__((unused)) = -1.0f;
+static float g_ema_r3 __attribute__((unused)) = -1.0f;
+
+static float g_kf_x_r1 = -1.0f;
+static float g_kf_x_r2 = -1.0f;
+static float g_kf_x_r3 = -1.0f;
+static float g_kf_p_r1 = 1.0f;
+static float g_kf_p_r2 = 1.0f;
+static float g_kf_p_r3 = 1.0f;
+
+static int calc_median(int *buf, int size)
+{
+    int tmp[MEDIAN_SIZE];
+    for (int i = 0; i < size; i++) tmp[i] = buf[i];
+    for (int i = 0; i < size - 1; i++)
+        for (int j = 0; j < size - i - 1; j++)
+            if (tmp[j] > tmp[j+1])
+            {
+                int t = tmp[j];
+                tmp[j] = tmp[j+1];
+                tmp[j+1] = t;
+            }
+    return tmp[size / 2];
+}
 
 void fira_set_default_params(bool controller)
 {
@@ -808,6 +886,132 @@ static void fira_session_info_ntf_twr_cb(const struct fira_twr_ranging_results *
         if (rm->status == 0)
         {
             len += snprintf(&str_result->str[len], str_result->len - len, ", distance[cm]=%d", (int)rm->distance_cm);
+            
+            /* 필터 적용값 출력 */
+            if (rm->short_addr == 1 && g_dist_r1 > 0)
+                len += snprintf(&str_result->str[len], str_result->len - len,
+                                ", filtered[cm]=%d", g_dist_r1);
+            else if (rm->short_addr == 2 && g_dist_r2 > 0)
+                len += snprintf(&str_result->str[len], str_result->len - len,
+                                ", filtered[cm]=%d", g_dist_r2);
+            else if (rm->short_addr == 3 && g_dist_r3 > 0)
+                len += snprintf(&str_result->str[len], str_result->len - len,
+                                ", filtered[cm]=%d", g_dist_r3);
+
+            int dist = (int)rm->distance_cm;
+            int addr_idx = rm->short_addr;  /* 주소를 인덱스로 사용 */
+
+            if (dist < 0)
+            {
+                /* 음수 = 측정 오류 */
+                error_count[addr_idx]++;
+                if (error_count[addr_idx] >= ERROR_LIMIT)
+                {
+                    len += snprintf(&str_result->str[len], str_result->len - len,
+                                ", PARKING=ERROR(연속%d회오류)", error_count[addr_idx]);
+                }
+            }
+            else
+            {
+                error_count[addr_idx] = 0;
+
+                /* 거리값 저장 */
+                /* 거리값 저장 + 필터 적용 */
+                #if defined(FILTER_V1_OUTLIER_ONLY)
+                    /* V1: 이상값 제거만 */
+                    #define APPLY_FILTER(dist, prev, ema, kfx, kfp, buf, bidx, bfull, gdist) \
+                        if ((prev) < 0 || abs((dist)-(prev)) <= OUTLIER_THRESHOLD_CM) \
+                        { (prev) = (dist); (gdist) = (dist); }
+
+                #elif defined(FILTER_V2_EMA_ONLY)
+                    /* V2: EMA만 */
+                    #define APPLY_FILTER(dist, prev, ema, kfx, kfp, buf, bidx, bfull, gdist) \
+                        if ((ema) < 0.0f) (ema) = (float)(dist); \
+                        else (ema) = EMA_ALPHA*(float)(dist) + (1.0f-EMA_ALPHA)*(ema); \
+                        (gdist) = (int)(ema);
+
+                #elif defined(FILTER_V3_OUTLIER_EMA)
+                    /* V3: 이상값 제거 + EMA */
+                    #define APPLY_FILTER(dist, prev, ema, kfx, kfp, buf, bidx, bfull, gdist) \
+                        if ((prev) < 0 || abs((dist)-(prev)) <= OUTLIER_THRESHOLD_CM) \
+                        { (prev) = (dist); \
+                        if ((ema) < 0.0f) (ema) = (float)(dist); \
+                        else (ema) = EMA_ALPHA*(float)(dist) + (1.0f-EMA_ALPHA)*(ema); \
+                        (gdist) = (int)(ema); }
+
+                #elif defined(FILTER_V4_MEDIAN_ONLY)
+                    /* V4: 중앙값 필터만 */
+                    #define APPLY_FILTER(dist, prev, ema, kfx, kfp, buf, bidx, bfull, gdist) \
+                        (buf)[(bidx)] = (dist); \
+                        (bidx) = ((bidx)+1) % MEDIAN_SIZE; \
+                        if ((bidx) == 0) (bfull) = true; \
+                        { int cnt = (bfull) ? MEDIAN_SIZE : (bidx); \
+                        if (cnt > 0) (gdist) = calc_median((buf), cnt); }
+
+                #elif defined(FILTER_V5_ENSEMBLE)
+                    /* V5: 이상값 제거 + 중앙값 + EMA */
+                    #define APPLY_FILTER(dist, prev, ema, kfx, kfp, buf, bidx, bfull, gdist) \
+                        if ((prev) < 0 || abs((dist)-(prev)) <= OUTLIER_THRESHOLD_CM) \
+                        { (prev) = (dist); \
+                        (buf)[(bidx)] = (dist); \
+                        (bidx) = ((bidx)+1) % MEDIAN_SIZE; \
+                        if ((bidx) == 0) (bfull) = true; \
+                        { int cnt = (bfull) ? MEDIAN_SIZE : (bidx); \
+                            if (cnt > 0) { int med = calc_median((buf), cnt); \
+                            if ((ema) < 0.0f) (ema) = (float)med; \
+                            else (ema) = EMA_ALPHA*(float)med + (1.0f-EMA_ALPHA)*(ema); \
+                            (gdist) = (int)(ema); }}}
+
+                #elif defined(FILTER_V6_KALMAN_ONLY)
+                    /* V6: 칼만 필터만 */
+                    #define APPLY_FILTER(dist, prev, ema, kfx, kfp, buf, bidx, bfull, gdist) \
+                        if ((kfx) < 0.0f) (kfx) = (float)(dist); \
+                        else { (kfp) = (kfp) + KF_Q; \
+                            float K = (kfp)/((kfp)+KF_R); \
+                            (kfx) = (kfx) + K*((float)(dist)-(kfx)); \
+                            (kfp) = (1.0f-K)*(kfp); } \
+                        (gdist) = (int)(kfx);
+
+                #elif defined(FILTER_V7_FULL)
+                    /* V7: 이상값 제거 + 중앙값 + 칼만 */
+                    #define APPLY_FILTER(dist, prev, ema, kfx, kfp, buf, bidx, bfull, gdist) \
+                        if ((prev) < 0 || abs((dist)-(prev)) <= OUTLIER_THRESHOLD_CM) \
+                        { (prev) = (dist); \
+                        (buf)[(bidx)] = (dist); \
+                        (bidx) = ((bidx)+1) % MEDIAN_SIZE; \
+                        if ((bidx) == 0) (bfull) = true; \
+                        { int cnt = (bfull) ? MEDIAN_SIZE : (bidx); \
+                            if (cnt > 0) { int med = calc_median((buf), cnt); \
+                            if ((kfx) < 0.0f) (kfx) = (float)med; \
+                            else { (kfp) = (kfp)+KF_Q; \
+                                    float K = (kfp)/((kfp)+KF_R); \
+                                    (kfx) = (kfx)+K*((float)med-(kfx)); \
+                                    (kfp) = (1.0f-K)*(kfp); } \
+                            (gdist) = (int)(kfx); }}}
+
+                #else
+                    /* 필터 없음 (기본값) */
+                    #define APPLY_FILTER(dist, prev, ema, kfx, kfp, buf, bidx, bfull, gdist) \
+                        (gdist) = (dist);
+                #endif
+
+                if (rm->short_addr == 1)
+                {
+                    APPLY_FILTER(dist, g_prev_r1, g_ema_r1, g_kf_x_r1, g_kf_p_r1,
+                                g_buf_r1, g_buf_r1_idx, g_buf_r1_full, g_dist_r1)
+                }
+                else if (rm->short_addr == 2)
+                {
+                    APPLY_FILTER(dist, g_prev_r2, g_ema_r2, g_kf_x_r2, g_kf_p_r2,
+                                g_buf_r2, g_buf_r2_idx, g_buf_r2_full, g_dist_r2)
+                }
+                else if (rm->short_addr == 3)
+                {
+                    APPLY_FILTER(dist, g_prev_r3, g_ema_r3, g_kf_x_r3, g_kf_p_r3,
+                                g_buf_r3, g_buf_r3_idx, g_buf_r3_full, g_dist_r3)
+                }
+
+            }
 
             if (rm->local_aoa_measurements[0].aoa_fom_100 > 0)
                 len += snprintf(&str_result->str[len], str_result->len - len, ", loc_az_pdoa=%0.2f, loc_az=%0.2f", convert_aoa_2pi_q16_to_deg(rm->local_aoa_measurements[0].pdoa_2pi), convert_aoa_2pi_q16_to_deg(rm->local_aoa_measurements[0].aoa_2pi));
@@ -826,9 +1030,74 @@ static void fira_session_info_ntf_twr_cb(const struct fira_twr_ranging_results *
         }
         len += snprintf(&str_result->str[len], str_result->len - len, "]");
     }
+    /* 두 거리값 모두 유효할 때 삼각형 계산 */
+    if (g_dist_r1 > 0 && g_dist_r2 > 0 && g_dist_r3 > 0)
+    {
+        float r1 = (float)g_dist_r1;
+        float r2 = (float)g_dist_r2;
+        float r3 = (float)g_dist_r3;
+
+        /* 3D 삼변측량 — x, z 먼저 계산 (y=0 평면) */
+        float A1 = 2.0f*(R2_X-R1_X);
+        float B1 = 2.0f*(R2_Z-R1_Z);
+        float D1 = r1*r1 - r2*r2
+                - R1_X*R1_X + R2_X*R2_X
+                - R1_Z*R1_Z + R2_Z*R2_Z;
+
+        float A2 = 2.0f*(R3_X-R1_X);
+        float B2 = 2.0f*(R3_Z-R1_Z);
+        float D2 = r1*r1 - r3*r3
+                - R1_X*R1_X + R3_X*R3_X
+                - R1_Z*R1_Z + R3_Z*R3_Z;
+
+        float denom = A1*B2 - A2*B1;
+
+        if (fabsf(denom) > 0.001f)
+        {
+            float px = (D1*B2 - D2*B1) / denom;
+            float pz = (A1*D2 - A2*D1) / denom;
+
+            /* 디버그 출력 추가 */
+            char dbg[128];
+            int dbg_len = snprintf(dbg, sizeof(dbg),
+                "DBG: r1=%.0f r2=%.0f r3=%.0f px=%.1f pz=%.1f py_sq=%.1f\r\n",
+                r1, r2, r3, px, pz,
+                r1*r1-(px-R1_X)*(px-R1_X)-(pz-R1_Z)*(pz-R1_Z));
+            reporter_instance.print(dbg, dbg_len);
+
+            /* y 계산 (R1 기준, y>0 조건) */
+            float py_sq = r1*r1
+                        - (px-R1_X)*(px-R1_X)
+                        - (pz-R1_Z)*(pz-R1_Z);
+            float py = (py_sq > 0.0f) ? sqrtf(py_sq) : 0.0f;
+
+            int pos_len = 0;
+            char pos_str[96];
+
+            if (px >= X_MIN_CM && px <= X_MAX_CM &&
+                py >= Y_MIN_CM && py <= Y_MAX_CM)
+            {
+                pos_len = snprintf(pos_str, sizeof(pos_str),
+                    "PARKING=OCCUPIED, POS=IN_POSITION"
+                    "(x=%.1f,y=%.1f,z=%.1f)\r\n",
+                    px, py, pz);
+            }
+            else
+            {
+                pos_len = snprintf(pos_str, sizeof(pos_str),
+                    "PARKING=OUT_OF_RANGE"
+                    "(x=%.1f,y=%.1f,z=%.1f)\r\n",
+                    px, py, pz);
+            }
+
+            reporter_instance.print(pos_str, pos_len);
+        }
+    }
+
     len += snprintf(&str_result->str[len], str_result->len - len, "}\r\n");
     reporter_instance.print((char *)str_result->str, len);
 }
+
 
 static void fira_range_diagnostics_ntf_cb(const struct fira_ranging_info *info, void *user_data)
 {

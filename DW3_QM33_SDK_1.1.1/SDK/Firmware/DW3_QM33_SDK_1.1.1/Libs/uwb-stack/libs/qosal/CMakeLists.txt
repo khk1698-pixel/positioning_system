@@ -84,9 +84,7 @@ install(
   TARGETS qosal_itf
   EXPORT qosal_itf-config
   ARCHIVE DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/qosal_itf
-          FILE_SET HEADERS
-          DESTINATION include/qosal_itf
-)
+          )
 
 install(EXPORT qosal_itf-config DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/qosal_itf/cmake)
 
@@ -94,8 +92,7 @@ install(
   TARGETS qosal
   EXPORT qosal-config
   ARCHIVE DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/qosal
-          FILE_SET HEADERS
-          DESTINATION include/qosal
-)
+          )
 
 install(EXPORT qosal-config DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/qosal/cmake)
+

@@ -17,9 +17,7 @@ install(
   OPTIONAL
   EXPORT config_manager_itf-config
   ARCHIVE DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/config_manager_itf
-          FILE_SET HEADERS
-          DESTINATION include/config_manager_itf
-)
+          )
 
 # Install the cmake file used to import the library
 install(EXPORT config_manager_itf-config
@@ -44,11 +42,10 @@ install(
   OPTIONAL
   EXPORT config_manager-config
   ARCHIVE DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/config_manager
-          FILE_SET HEADERS
-          DESTINATION include/config_manager
-)
+          )
 
 # Install the cmake file used to import the library
 install(EXPORT config_manager-config
         DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/config_manager/cmake
 )
+

@@ -36,8 +36,7 @@ install(
   OPTIONAL
   EXPORT HAL-config
   ARCHIVE DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/HAL
-          FILE_SET HEADERS
-          DESTINATION include/HAL
-)
+          )
 
 install(EXPORT HAL-config DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/HAL/cmake)
+

@@ -12,8 +12,7 @@ install(
   OPTIONAL
   EXPORT qmath-config
   ARCHIVE DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/qmath
-          FILE_SET HEADERS
-          DESTINATION include/qmath
-)
+          )
 
 install(EXPORT qmath-config DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE}/qmath/cmake)
+
