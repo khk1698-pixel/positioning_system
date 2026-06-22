@@ -36,37 +36,27 @@ static struct uwbmac_context *uwbmac_ctx = NULL;
 static struct fira_context fira_ctx;
 
 #define STR_SIZE (256)
-#define PARKING_THRESHOLD_CM  100
 #define TEN_TO_6 1000000
 #define ERROR_LIMIT           3    /* 연속 오류 허용 횟수 */
 #define R1_X  0.0f
 #define R1_Y  0.0f
-#define R1_Z  140.0f
-#define R2_X  100.0f
+#define R2_X  200.0f
 #define R2_Y  0.0f
-#define R2_Z  140.0f
-#define R3_X  50.0f
-#define R3_Y  0.0f
-#define R3_Z  53.4f
+#define R3_X  0.0f
+#define R3_Y  200.0f
 
-#define X_MIN_CM   -50.0f
-#define X_MAX_CM   150.0f
+#define RESPONDER_Z   200.0f   /* R1, R2, R3 공통 높이 (cm) */
+#define INIT_HEIGHT_DEFAULT  100.0f  /* Initiator 기본 높이 (cm), SETHEIGHT로 변경 가능 */
+
+#define X_MIN_CM   0.0f
+#define X_MAX_CM   200.0f
 #define Y_MIN_CM   0.0f
-#define Y_MAX_CM   500.0f
-
-/* ========== 필터 버전 선택 (하나만 주석 해제) ========== */
-// #define FILTER_V1_OUTLIER_ONLY
-// #define FILTER_V2_EMA_ONLY
-// #define FILTER_V3_OUTLIER_EMA
-// #define FILTER_V4_MEDIAN_ONLY
-// #define FILTER_V5_ENSEMBLE
-// #define FILTER_V6_KALMAN_ONLY
-#define FILTER_V7_FULL
-/* 모두 주석이면 필터 없음 (기본값) */
+#define Y_MAX_CM   200.0f
 
 static uint32_t session_id = 42;
 static uint32_t session_handle = 0;
 static bool started = false;
+static float g_init_height_cm = INIT_HEIGHT_DEFAULT;  /* SETHEIGHT로 런타임 변경 가능 */
 static void fira_session_info_ntf_twr_cb(const struct fira_twr_ranging_results *results, void *user_data);
 static void fira_range_diagnostics_ntf_cb(const struct fira_ranging_info *info, void *user_data);
 static void fira_session_status_ntf_cb(const struct fira_session_status_ntf_content *status, void *user_data);
@@ -77,10 +67,9 @@ static int g_dist_r1 = -1;
 static int g_dist_r2 = -1;
 static int g_dist_r3 = -1;
 
-/* 필터용 전역변수 */
+/* 필터용 전역변수 (V7: 이상값 제거 + 중앙값 + 칼만) */
 #define OUTLIER_THRESHOLD_CM  20
 #define MEDIAN_SIZE           5
-#define EMA_ALPHA             0.3f
 #define KF_Q                  1.0f
 #define KF_R                  10.0f
 
@@ -97,10 +86,6 @@ static int   g_buf_r3_idx = 0;
 static bool  g_buf_r1_full = false;
 static bool  g_buf_r2_full = false;
 static bool  g_buf_r3_full = false;
-
-static float g_ema_r1 __attribute__((unused)) = -1.0f;
-static float g_ema_r2 __attribute__((unused)) = -1.0f;
-static float g_ema_r3 __attribute__((unused)) = -1.0f;
 
 static float g_kf_x_r1 = -1.0f;
 static float g_kf_x_r2 = -1.0f;
@@ -915,99 +900,35 @@ static void fira_session_info_ntf_twr_cb(const struct fira_twr_ranging_results *
             {
                 error_count[addr_idx] = 0;
 
-                /* 거리값 저장 */
-                /* 거리값 저장 + 필터 적용 */
-                #if defined(FILTER_V1_OUTLIER_ONLY)
-                    /* V1: 이상값 제거만 */
-                    #define APPLY_FILTER(dist, prev, ema, kfx, kfp, buf, bidx, bfull, gdist) \
-                        if ((prev) < 0 || abs((dist)-(prev)) <= OUTLIER_THRESHOLD_CM) \
-                        { (prev) = (dist); (gdist) = (dist); }
-
-                #elif defined(FILTER_V2_EMA_ONLY)
-                    /* V2: EMA만 */
-                    #define APPLY_FILTER(dist, prev, ema, kfx, kfp, buf, bidx, bfull, gdist) \
-                        if ((ema) < 0.0f) (ema) = (float)(dist); \
-                        else (ema) = EMA_ALPHA*(float)(dist) + (1.0f-EMA_ALPHA)*(ema); \
-                        (gdist) = (int)(ema);
-
-                #elif defined(FILTER_V3_OUTLIER_EMA)
-                    /* V3: 이상값 제거 + EMA */
-                    #define APPLY_FILTER(dist, prev, ema, kfx, kfp, buf, bidx, bfull, gdist) \
-                        if ((prev) < 0 || abs((dist)-(prev)) <= OUTLIER_THRESHOLD_CM) \
-                        { (prev) = (dist); \
-                        if ((ema) < 0.0f) (ema) = (float)(dist); \
-                        else (ema) = EMA_ALPHA*(float)(dist) + (1.0f-EMA_ALPHA)*(ema); \
-                        (gdist) = (int)(ema); }
-
-                #elif defined(FILTER_V4_MEDIAN_ONLY)
-                    /* V4: 중앙값 필터만 */
-                    #define APPLY_FILTER(dist, prev, ema, kfx, kfp, buf, bidx, bfull, gdist) \
-                        (buf)[(bidx)] = (dist); \
-                        (bidx) = ((bidx)+1) % MEDIAN_SIZE; \
-                        if ((bidx) == 0) (bfull) = true; \
-                        { int cnt = (bfull) ? MEDIAN_SIZE : (bidx); \
-                        if (cnt > 0) (gdist) = calc_median((buf), cnt); }
-
-                #elif defined(FILTER_V5_ENSEMBLE)
-                    /* V5: 이상값 제거 + 중앙값 + EMA */
-                    #define APPLY_FILTER(dist, prev, ema, kfx, kfp, buf, bidx, bfull, gdist) \
-                        if ((prev) < 0 || abs((dist)-(prev)) <= OUTLIER_THRESHOLD_CM) \
-                        { (prev) = (dist); \
-                        (buf)[(bidx)] = (dist); \
-                        (bidx) = ((bidx)+1) % MEDIAN_SIZE; \
-                        if ((bidx) == 0) (bfull) = true; \
-                        { int cnt = (bfull) ? MEDIAN_SIZE : (bidx); \
-                            if (cnt > 0) { int med = calc_median((buf), cnt); \
-                            if ((ema) < 0.0f) (ema) = (float)med; \
-                            else (ema) = EMA_ALPHA*(float)med + (1.0f-EMA_ALPHA)*(ema); \
-                            (gdist) = (int)(ema); }}}
-
-                #elif defined(FILTER_V6_KALMAN_ONLY)
-                    /* V6: 칼만 필터만 */
-                    #define APPLY_FILTER(dist, prev, ema, kfx, kfp, buf, bidx, bfull, gdist) \
-                        if ((kfx) < 0.0f) (kfx) = (float)(dist); \
-                        else { (kfp) = (kfp) + KF_Q; \
-                            float K = (kfp)/((kfp)+KF_R); \
-                            (kfx) = (kfx) + K*((float)(dist)-(kfx)); \
-                            (kfp) = (1.0f-K)*(kfp); } \
-                        (gdist) = (int)(kfx);
-
-                #elif defined(FILTER_V7_FULL)
-                    /* V7: 이상값 제거 + 중앙값 + 칼만 */
-                    #define APPLY_FILTER(dist, prev, ema, kfx, kfp, buf, bidx, bfull, gdist) \
-                        if ((prev) < 0 || abs((dist)-(prev)) <= OUTLIER_THRESHOLD_CM) \
-                        { (prev) = (dist); \
-                        (buf)[(bidx)] = (dist); \
-                        (bidx) = ((bidx)+1) % MEDIAN_SIZE; \
-                        if ((bidx) == 0) (bfull) = true; \
-                        { int cnt = (bfull) ? MEDIAN_SIZE : (bidx); \
-                            if (cnt > 0) { int med = calc_median((buf), cnt); \
-                            if ((kfx) < 0.0f) (kfx) = (float)med; \
-                            else { (kfp) = (kfp)+KF_Q; \
-                                    float K = (kfp)/((kfp)+KF_R); \
-                                    (kfx) = (kfx)+K*((float)med-(kfx)); \
-                                    (kfp) = (1.0f-K)*(kfp); } \
-                            (gdist) = (int)(kfx); }}}
-
-                #else
-                    /* 필터 없음 (기본값) */
-                    #define APPLY_FILTER(dist, prev, ema, kfx, kfp, buf, bidx, bfull, gdist) \
-                        (gdist) = (dist);
-                #endif
+                /* 거리값 저장 + 필터 적용 (V7: 이상값 제거 + 중앙값 + 칼만) */
+                #define APPLY_FILTER(dist, prev, kfx, kfp, buf, bidx, bfull, gdist) \
+                    if ((prev) < 0 || abs((dist)-(prev)) <= OUTLIER_THRESHOLD_CM) \
+                    { (prev) = (dist); \
+                    (buf)[(bidx)] = (dist); \
+                    (bidx) = ((bidx)+1) % MEDIAN_SIZE; \
+                    if ((bidx) == 0) (bfull) = true; \
+                    { int cnt = (bfull) ? MEDIAN_SIZE : (bidx); \
+                        if (cnt > 0) { int med = calc_median((buf), cnt); \
+                        if ((kfx) < 0.0f) (kfx) = (float)med; \
+                        else { (kfp) = (kfp)+KF_Q; \
+                                float K = (kfp)/((kfp)+KF_R); \
+                                (kfx) = (kfx)+K*((float)med-(kfx)); \
+                                (kfp) = (1.0f-K)*(kfp); } \
+                        (gdist) = (int)(kfx); }}}
 
                 if (rm->short_addr == 1)
                 {
-                    APPLY_FILTER(dist, g_prev_r1, g_ema_r1, g_kf_x_r1, g_kf_p_r1,
+                    APPLY_FILTER(dist, g_prev_r1, g_kf_x_r1, g_kf_p_r1,
                                 g_buf_r1, g_buf_r1_idx, g_buf_r1_full, g_dist_r1)
                 }
                 else if (rm->short_addr == 2)
                 {
-                    APPLY_FILTER(dist, g_prev_r2, g_ema_r2, g_kf_x_r2, g_kf_p_r2,
+                    APPLY_FILTER(dist, g_prev_r2, g_kf_x_r2, g_kf_p_r2,
                                 g_buf_r2, g_buf_r2_idx, g_buf_r2_full, g_dist_r2)
                 }
                 else if (rm->short_addr == 3)
                 {
-                    APPLY_FILTER(dist, g_prev_r3, g_ema_r3, g_kf_x_r3, g_kf_p_r3,
+                    APPLY_FILTER(dist, g_prev_r3, g_kf_x_r3, g_kf_p_r3,
                                 g_buf_r3, g_buf_r3_idx, g_buf_r3_full, g_dist_r3)
                 }
 
@@ -1030,46 +951,83 @@ static void fira_session_info_ntf_twr_cb(const struct fira_twr_ranging_results *
         }
         len += snprintf(&str_result->str[len], str_result->len - len, "]");
     }
-    /* 두 거리값 모두 유효할 때 삼각형 계산 */
+    /* 세 거리값 모두 유효할 때 삼각형 계산 */
     if (g_dist_r1 > 0 && g_dist_r2 > 0 && g_dist_r3 > 0)
     {
         float r1 = (float)g_dist_r1;
         float r2 = (float)g_dist_r2;
         float r3 = (float)g_dist_r3;
 
-        /* 3D 삼변측량 — x, z 먼저 계산 (y=0 평면) */
-        float A1 = 2.0f*(R2_X-R1_X);
-        float B1 = 2.0f*(R2_Z-R1_Z);
-        float D1 = r1*r1 - r2*r2
-                - R1_X*R1_X + R2_X*R2_X
-                - R1_Z*R1_Z + R2_Z*R2_Z;
+        /* --- 앙각 보정 ---
+         * R1, R2, R3 모두 Z=RESPONDER_Z(200cm)로 동일하므로 Δh 하나로 통일
+         * Δh = |Initiator 설치 높이 - Responder 높이|
+         * 사선거리(측정값) → 수평거리: r_h = √(r² - Δh²)
+         */
+        float dh = fabsf(g_init_height_cm - RESPONDER_Z);
+        float dh_sq = dh * dh;
 
-        float A2 = 2.0f*(R3_X-R1_X);
-        float B2 = 2.0f*(R3_Z-R1_Z);
-        float D2 = r1*r1 - r3*r3
-                - R1_X*R1_X + R3_X*R3_X
-                - R1_Z*R1_Z + R3_Z*R3_Z;
+        float r1h_sq = r1*r1 - dh_sq;
+        float r2h_sq = r2*r2 - dh_sq;
+        float r3h_sq = r3*r3 - dh_sq;
 
-        float denom = A1*B2 - A2*B1;
+        /* 보정값이 음수(기하학적으로 불가)이면 원시값 그대로 사용 */
+        float r1h = (r1h_sq > 0.0f) ? sqrtf(r1h_sq) : r1;
+        float r2h = (r2h_sq > 0.0f) ? sqrtf(r2h_sq) : r2;
+        float r3h = (r3h_sq > 0.0f) ? sqrtf(r3h_sq) : r3;
+
+        /* 앙각 보정 디버그 출력 */
+        char dbg_elev[128];
+        int dbg_elev_len = snprintf(dbg_elev, sizeof(dbg_elev),
+            "ELEV_CORR: init_h=%.1f dh=%.1f"
+            " r1:%.0f->%.0f r2:%.0f->%.0f r3:%.0f->%.0f\r\n",
+            g_init_height_cm, dh,
+            r1, r1h, r2, r2h, r3, r3h);
+        reporter_instance.print(dbg_elev, dbg_elev_len);
+
+        /* --- 2D 삼변측량 (X-Y 평면) ---
+         * R1(0,0), R2(200,0), R3(0,200) 모두 Z=200으로 동일
+         * → Z항이 상쇄되어 미지수는 px, py 두 개만 남음
+         *
+         * 방정식:
+         *   R1 기준: A1*px + B1*py = D1
+         *   R2 기준: A2*px + B2*py = D2
+         *
+         * R1_Z = R2_Z = R3_Z = 200 이므로 Z 관련 항은 모두 0
+         */
+        float A1 = 2.0f * (R2_X - R1_X);   /* 2*(200-0) = 400 */
+        float B1 = 2.0f * (R2_Y - R1_Y);   /* 2*(0-0)   = 0   */
+        float D1 = r1h*r1h - r2h*r2h
+                 - R1_X*R1_X + R2_X*R2_X
+                 - R1_Y*R1_Y + R2_Y*R2_Y;
+        /* Z항: R1_Z=R2_Z이므로 -R1_Z²+R2_Z² = 0 → 생략 */
+
+        float A2 = 2.0f * (R3_X - R1_X);   /* 2*(0-0)   = 0   */
+        float B2 = 2.0f * (R3_Y - R1_Y);   /* 2*(200-0) = 400 */
+        float D2 = r1h*r1h - r3h*r3h
+                 - R1_X*R1_X + R3_X*R3_X
+                 - R1_Y*R1_Y + R3_Y*R3_Y;
+
+        float denom = A1*B2 - A2*B1;  /* 400*400 - 0*0 = 160000 (항상 유효) */
 
         if (fabsf(denom) > 0.001f)
         {
             float px = (D1*B2 - D2*B1) / denom;
-            float pz = (A1*D2 - A2*D1) / denom;
+            float py = (A1*D2 - A2*D1) / denom;
 
-            /* 디버그 출력 추가 */
-            char dbg[128];
+            /* pz 역산: Initiator 실제 높이 추정값 (참고용) */
+            float pz_sq = r1*r1
+                        - (px - R1_X)*(px - R1_X)
+                        - (py - R1_Y)*(py - R1_Y);
+            float pz_estimated = (pz_sq > 0.0f) ? (RESPONDER_Z - sqrtf(pz_sq)) : 0.0f;
+
+            /* 디버그 출력 */
+            char dbg[160];
             int dbg_len = snprintf(dbg, sizeof(dbg),
-                "DBG: r1=%.0f r2=%.0f r3=%.0f px=%.1f pz=%.1f py_sq=%.1f\r\n",
-                r1, r2, r3, px, pz,
-                r1*r1-(px-R1_X)*(px-R1_X)-(pz-R1_Z)*(pz-R1_Z));
+                "DBG: r1h=%.0f r2h=%.0f r3h=%.0f"
+                " px=%.1f py=%.1f pz_est=%.1f(set=%.1f)\r\n",
+                r1h, r2h, r3h, px, py,
+                pz_estimated, g_init_height_cm);
             reporter_instance.print(dbg, dbg_len);
-
-            /* y 계산 (R1 기준, y>0 조건) */
-            float py_sq = r1*r1
-                        - (px-R1_X)*(px-R1_X)
-                        - (pz-R1_Z)*(pz-R1_Z);
-            float py = (py_sq > 0.0f) ? sqrtf(py_sq) : 0.0f;
 
             int pos_len = 0;
             char pos_str[96];
@@ -1079,15 +1037,15 @@ static void fira_session_info_ntf_twr_cb(const struct fira_twr_ranging_results *
             {
                 pos_len = snprintf(pos_str, sizeof(pos_str),
                     "PARKING=OCCUPIED, POS=IN_POSITION"
-                    "(x=%.1f,y=%.1f,z=%.1f)\r\n",
-                    px, py, pz);
+                    "(x=%.1f,y=%.1f,z_est=%.1f)\r\n",
+                    px, py, pz_estimated);
             }
             else
             {
                 pos_len = snprintf(pos_str, sizeof(pos_str),
                     "PARKING=OUT_OF_RANGE"
-                    "(x=%.1f,y=%.1f,z=%.1f)\r\n",
-                    px, py, pz);
+                    "(x=%.1f,y=%.1f,z_est=%.1f)\r\n",
+                    px, py, pz_estimated);
             }
 
             reporter_instance.print(pos_str, pos_len);
@@ -1233,10 +1191,41 @@ const app_definition_t helpers_app_fira[] __attribute__((
 };
 
 /**
- * @brief Action to be taken before saving params to NVM.
- * Ensures initialization if user didn't provide configuration before.
+ * @brief SETHEIGHT <cm> 명령 처리
+ *        Initiator의 실제 설치 높이를 런타임에 설정한다.
+ *        앙각 보정(사선거리 → 수평거리 변환)에 사용된다.
+ *        사용 예: SETHEIGHT 45
+ *        유효 범위: 0 ~ RESPONDER_Z(200cm) 미만
  */
-void fira_save_params(void)
+void fira_cmd_set_height(const char *arg)
+{
+    float h = 0.0f;
+    char msg[64];
+    int len;
+
+    if (arg == NULL || sscanf(arg, "%f", &h) != 1)
+    {
+        len = snprintf(msg, sizeof(msg), "SETHEIGHT: invalid argument\r\n");
+        reporter_instance.print(msg, len);
+        return;
+    }
+
+    if (h < 0.0f || h >= RESPONDER_Z)
+    {
+        len = snprintf(msg, sizeof(msg),
+            "SETHEIGHT: out of range (0 ~ %.0f)\r\n", RESPONDER_Z);
+        reporter_instance.print(msg, len);
+        return;
+    }
+
+    g_init_height_cm = h;
+    len = snprintf(msg, sizeof(msg),
+        "SETHEIGHT: init_height=%.1fcm dh=%.1fcm\r\n",
+        g_init_height_cm, fabsf(g_init_height_cm - RESPONDER_Z));
+    reporter_instance.print(msg, len);
+}
+
+
 {
     fira_param_t *fira_params = get_fira_config();
 
