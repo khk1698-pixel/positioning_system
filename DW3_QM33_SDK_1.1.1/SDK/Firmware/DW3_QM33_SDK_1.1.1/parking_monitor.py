@@ -23,6 +23,28 @@ def get_save_path():
 
 
 # ───────────────────────────────────────────────
+# Initiator 높이 설정 (앙각 보정용)
+# ───────────────────────────────────────────────
+def get_init_height():
+    print("\nInitiator 설치 높이를 입력하세요 (앙각 보정에 사용됩니다).")
+    print("(예: 45  → Initiator가 바닥에서 45cm 높이에 설치된 경우)")
+    print("(Enter만 누르면 기본값 100cm 사용)")
+    while True:
+        val = input("높이 (cm): ").strip()
+        if not val:
+            print("기본값 100cm 사용합니다.")
+            return 100.0
+        try:
+            h = float(val)
+            if 0.0 <= h < 200.0:
+                return h
+            else:
+                print("0 이상 200 미만의 값을 입력해주세요.")
+        except ValueError:
+            print("숫자를 입력해주세요.")
+
+
+# ───────────────────────────────────────────────
 # COM 포트 자동 감지
 # ───────────────────────────────────────────────
 def find_com_port():
@@ -74,7 +96,9 @@ def parse_value(line, key):
 def parse_block(block_lines):
     r1, r2, r3 = None, None, None
     f1, f2, f3 = None, None, None
-    x, y, z, pos = None, None, None, None
+    x, y, z_est, pos = None, None, None, None
+    elev_dh = None          # ELEV_CORR: 앙각 보정 높이차
+    r1h, r2h, r3h = None, None, None  # 보정된 수평거리
 
     for line in block_lines:
         # 거리값 파싱
@@ -90,17 +114,37 @@ def parse_block(block_lines):
             r3 = parse_value(line, "distance[cm]")
             f3 = parse_value(line, "filtered[cm]")
 
-        # POS 파싱 — 정규식으로 안정적으로 추출
-        # 예: PARKING=OCCUPIED, POS=IN_POSITION(x=74.6,y=181.2,z=139.1)
-        # 예: PARKING=OUT_OF_RANGE(x=74.6,y=181.2,z=139.1)
+        # ELEV_CORR 줄 파싱
+        # 예: ELEV_CORR: init_h=45.0 dh=155.0 r1:180->97 r2:190->105 r3:200->120
+        if line.startswith("ELEV_CORR:"):
+            mdh = re.search(r'dh=([\d.]+)', line)
+            mr1h = re.search(r'r1:[\d.]+\->([\d.]+)', line)
+            mr2h = re.search(r'r2:[\d.]+\->([\d.]+)', line)
+            mr3h = re.search(r'r3:[\d.]+\->([\d.]+)', line)
+            if mdh:
+                try: elev_dh = float(mdh.group(1))
+                except: pass
+            if mr1h:
+                try: r1h = float(mr1h.group(1))
+                except: pass
+            if mr2h:
+                try: r2h = float(mr2h.group(1))
+                except: pass
+            if mr3h:
+                try: r3h = float(mr3h.group(1))
+                except: pass
+
+        # PARKING= 줄 파싱
+        # 예: PARKING=OCCUPIED, POS=IN_POSITION(x=74.6,y=181.2,z_est=45.2)
+        # 예: PARKING=OUT_OF_RANGE(x=74.6,y=181.2,z_est=45.2)
         if "PARKING=" in line or line.startswith("POS="):
             pos = line.strip()
 
-            # x, y, z 정규식 파싱
-            mx = re.search(r'x=([-\d.]+)', line)
-            my = re.search(r'y=([-\d.]+)', line)
-            mz = re.search(r'z=([-\d.]+)', line)
-            mh = re.search(r'h=([-\d.]+)', line)
+            mx  = re.search(r'x=([-\d.]+)', line)
+            my  = re.search(r'y=([-\d.]+)', line)
+            mz  = re.search(r'z_est=([-\d.]+)', line)  # z_est 우선
+            if not mz:
+                mz = re.search(r'z=([-\d.]+)', line)   # 구버전 z 호환
 
             if mx:
                 try: x = float(mx.group(1))
@@ -109,13 +153,10 @@ def parse_block(block_lines):
                 try: y = float(my.group(1))
                 except: pass
             if mz:
-                try: z = float(mz.group(1))
-                except: pass
-            elif mh:
-                try: z = float(mh.group(1))
+                try: z_est = float(mz.group(1))
                 except: pass
 
-    return r1, r2, r3, f1, f2, f3, x, y, z, pos
+    return r1, r2, r3, f1, f2, f3, x, y, z_est, pos, elev_dh, r1h, r2h, r3h
 
 
 # ───────────────────────────────────────────────
@@ -134,60 +175,88 @@ def fmt(val, width=7, decimal=None):
     return f"{val:>{width}}"
 
 
-def format_row(ts, r1, r2, r3, f1, f2, f3, x, y, z, pos):
+def format_row(ts, r1, r2, r3, f1, f2, f3, x, y, z_est, pos, elev_dh=None, r1h=None, r2h=None, r3h=None):
     if pos is None:
         pos_str = "대기 중..."
     elif "IN_POSITION" in pos:
-        pos_str = f"✅ {pos}"
+        pos_str = f"✅ IN_POSITION"
     elif "OUT_OF_RANGE" in pos:
-        pos_str = f"⚠️  {pos}"
+        pos_str = f"⚠️  OUT_OF_RANGE"
     elif "TOO_CLOSE" in pos:
-        pos_str = f"🔴 {pos}"
+        pos_str = f"🔴 TOO_CLOSE"
     elif "EMPTY" in pos:
-        pos_str = f"⬜ {pos}"
+        pos_str = f"⬜ EMPTY"
     elif "ERROR" in pos:
-        pos_str = f"❗ {pos}"
+        pos_str = f"❗ ERROR"
     else:
         pos_str = pos
 
-    def dist_str(r, f):
+    def dist_str(r, f, rh=None):
         if r is None:
-            return "      -"
+            return "        -"
+        parts = f"{r}"
         if f is not None and f != r:
-            return f"{r}→{f}"
-        return f"{r:>7}"
+            parts += f"→{f}"
+        if rh is not None:
+            parts += f"[{int(rh)}]"   # 앙각 보정된 수평거리
+        return parts
 
-    d1 = dist_str(r1, f1)
-    d2 = dist_str(r2, f2)
-    d3 = dist_str(r3, f3)
+    d1 = dist_str(r1, f1, r1h)
+    d2 = dist_str(r2, f2, r2h)
+    d3 = dist_str(r3, f3, r3h)
 
-    x_s = fmt(x, 6, 1)
-    y_s = fmt(y, 6, 1)
-    z_s = fmt(z, 6, 1)
+    x_s    = fmt(x, 6, 1)
+    y_s    = fmt(y, 6, 1)
+    z_s    = fmt(z_est, 6, 1)
+    dh_s   = fmt(elev_dh, 6, 1)
 
-    return f"  {ts:<10} {d1:>9} {d2:>9} {d3:>9} {x_s} {y_s} {z_s}  {pos_str}"
+    return f"  {ts:<10} {d1:>12} {d2:>12} {d3:>12} {x_s} {y_s} {z_s} {dh_s}  {pos_str}"
 
 
-def redraw(csv_path):
+def redraw(csv_path, init_height=None):
     os.system('cls')
-    print("=" * 100)
+    print("=" * 115)
     print(f"  주차 모니터링  |  시작: {start_time}  |  종료: Ctrl+C")
     print(f"  저장 경로: {csv_path}")
-    print("  ※ 거리값: 원시→필터 (필터 미적용 시 원시값만 표시)")
-    print("=" * 100)
-    print(f"  {'시각':<10} {'R1(cm)':>9} {'R2(cm)':>9} {'R3(cm)':>9} {'x':>6} {'y':>6} {'z/h':>6}  판정")
-    print("-" * 100)
+    h_str = f"{init_height:.1f}cm" if init_height is not None else "-"
+    print(f"  Initiator 높이: {h_str}  |  ※ 거리값: 원시→필터[앙각보정] 순 표시")
+    print("=" * 115)
+    print(f"  {'시각':<10} {'R1(cm)':>12} {'R2(cm)':>12} {'R3(cm)':>12} {'x':>6} {'y':>6} {'z_est':>6} {'Δh':>6}  판정")
+    print("-" * 115)
     for row in display_buffer:
         print(row)
-    print("-" * 100)
+    print("-" * 115)
     print(f"  최근 {len(display_buffer)}개 표시 중 (전체 데이터는 CSV에 저장됨)")
 
 
 # ───────────────────────────────────────────────
 # 메인
 # ───────────────────────────────────────────────
+def write_csv_row(writer, csv_file, r1, r2, r3, f1, f2, f3,
+                  x, y, z_est, pos, elev_dh, r1h, r2h, r3h):
+    writer.writerow([
+        datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        r1   if r1   is not None else '',
+        r2   if r2   is not None else '',
+        r3   if r3   is not None else '',
+        f1   if f1   is not None else '',
+        f2   if f2   is not None else '',
+        f3   if f3   is not None else '',
+        f"{r1h:.0f}" if r1h is not None else '',
+        f"{r2h:.0f}" if r2h is not None else '',
+        f"{r3h:.0f}" if r3h is not None else '',
+        f"{x:.1f}"    if x    is not None else '',
+        f"{y:.1f}"    if y    is not None else '',
+        f"{z_est:.1f}" if z_est is not None else '',
+        f"{elev_dh:.1f}" if elev_dh is not None else '',
+        pos  if pos  is not None else ''
+    ])
+    csv_file.flush()
+
+
 def main():
     csv_path = get_save_path()
+    init_height = get_init_height()
 
     com_port = find_com_port()
     if not com_port:
@@ -204,19 +273,27 @@ def main():
         print(f"연결 실패: {e}")
         return
 
+    # SETHEIGHT 명령 전송
+    cmd = f"SETHEIGHT {init_height:.1f}\r\n"
+    ser.write(cmd.encode('utf-8'))
+    print(f"📡 SETHEIGHT {init_height:.1f} 전송 완료")
+
     csv_file = open(csv_path, 'w', newline='', encoding='utf-8-sig')
     writer = csv.writer(csv_file)
     writer.writerow([
         'timestamp',
         'r1_raw', 'r2_raw', 'r3_raw',
         'r1_filtered', 'r2_filtered', 'r3_filtered',
-        'x', 'y', 'z_or_h', 'pos'
+        'r1_corrected', 'r2_corrected', 'r3_corrected',  # 앙각 보정된 수평거리
+        'x', 'y', 'z_est',                               # z_est = 추정 높이
+        'delta_h',                                        # 앙각 보정에 사용된 높이차
+        'pos'
     ])
     print(f"📄 CSV 저장 경로: {csv_path}")
 
     global start_time
     start_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    redraw(csv_path)
+    redraw(csv_path, init_height)
 
     buffer = []
     in_block = False
@@ -233,29 +310,18 @@ def main():
 
                 # 블록 시작 감지
                 if "SESSION_INFO_NTF:" in line:
-                    # 이전 블록이 PARKING/POS 없이 끝난 경우 처리
+                    # 이전 블록이 PARKING 줄 없이 끊긴 경우 처리
                     if in_block and len(buffer) > 1:
                         ts = datetime.now().strftime('%H:%M:%S')
-                        r1, r2, r3, f1, f2, f3, x, y, z, pos = parse_block(buffer)
-                        row_str = format_row(ts, r1, r2, r3, f1, f2, f3, x, y, z, pos)
+                        r1, r2, r3, f1, f2, f3, x, y, z_est, pos, elev_dh, r1h, r2h, r3h = parse_block(buffer)
+                        row_str = format_row(ts, r1, r2, r3, f1, f2, f3,
+                                             x, y, z_est, pos, elev_dh, r1h, r2h, r3h)
                         display_buffer.append(row_str)
                         if len(display_buffer) > DISPLAY_ROWS:
                             display_buffer.pop(0)
-                        redraw(csv_path)
-                        writer.writerow([
-                            datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                            r1 if r1 is not None else '',
-                            r2 if r2 is not None else '',
-                            r3 if r3 is not None else '',
-                            f1 if f1 is not None else '',
-                            f2 if f2 is not None else '',
-                            f3 if f3 is not None else '',
-                            f"{x:.1f}" if x is not None else '',
-                            f"{y:.1f}" if y is not None else '',
-                            f"{z:.1f}" if z is not None else '',
-                            pos if pos is not None else ''
-                        ])
-                        csv_file.flush()
+                        redraw(csv_path, init_height)
+                        write_csv_row(writer, csv_file, r1, r2, r3, f1, f2, f3,
+                                      x, y, z_est, pos, elev_dh, r1h, r2h, r3h)
 
                     in_block = True
                     buffer = [line]
@@ -267,28 +333,16 @@ def main():
                     # PARKING= 줄이 오면 블록 완료
                     if "PARKING=" in line or line.startswith("POS="):
                         ts = datetime.now().strftime('%H:%M:%S')
-                        r1, r2, r3, f1, f2, f3, x, y, z, pos = parse_block(buffer)
+                        r1, r2, r3, f1, f2, f3, x, y, z_est, pos, elev_dh, r1h, r2h, r3h = parse_block(buffer)
 
-                        row_str = format_row(ts, r1, r2, r3, f1, f2, f3, x, y, z, pos)
+                        row_str = format_row(ts, r1, r2, r3, f1, f2, f3,
+                                             x, y, z_est, pos, elev_dh, r1h, r2h, r3h)
                         display_buffer.append(row_str)
                         if len(display_buffer) > DISPLAY_ROWS:
                             display_buffer.pop(0)
-                        redraw(csv_path)
-
-                        writer.writerow([
-                            datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                            r1 if r1 is not None else '',
-                            r2 if r2 is not None else '',
-                            r3 if r3 is not None else '',
-                            f1 if f1 is not None else '',
-                            f2 if f2 is not None else '',
-                            f3 if f3 is not None else '',
-                            f"{x:.1f}" if x is not None else '',
-                            f"{y:.1f}" if y is not None else '',
-                            f"{z:.1f}" if z is not None else '',
-                            pos if pos is not None else ''
-                        ])
-                        csv_file.flush()
+                        redraw(csv_path, init_height)
+                        write_csv_row(writer, csv_file, r1, r2, r3, f1, f2, f3,
+                                      x, y, z_est, pos, elev_dh, r1h, r2h, r3h)
                         buffer = []
                         in_block = False
 
