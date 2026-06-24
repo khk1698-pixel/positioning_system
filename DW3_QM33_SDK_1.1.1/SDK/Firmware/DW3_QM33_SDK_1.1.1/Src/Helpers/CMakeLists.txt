@@ -8,7 +8,7 @@ if(USE_DIAG_PRINTF)
 endif()
 
 target_include_directories(Helpers PUBLIC Inc
-    E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Libs/uwbstack_libs/delivery/fira/Release/include/uwbstack_bundle
+    C:/Users/PC_pc/Desktop/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Libs/uwbstack_libs/delivery/fira/Release/include/uwbstack_bundle
 )
 
 target_link_libraries(Helpers PUBLIC OSAL)

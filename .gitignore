@@ -3,3 +3,5 @@
 *.dmg
 *.zip
 *.sh
+BuildOutput/**
+!BuildOutput/**/*.hex
