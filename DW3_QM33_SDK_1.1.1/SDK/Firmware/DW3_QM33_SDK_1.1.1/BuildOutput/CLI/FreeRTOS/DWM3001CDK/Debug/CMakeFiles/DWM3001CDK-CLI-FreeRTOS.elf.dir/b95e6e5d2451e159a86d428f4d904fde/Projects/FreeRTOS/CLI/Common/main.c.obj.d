@@ -1,0 +1,22 @@
+CMakeFiles/DWM3001CDK-CLI-FreeRTOS.elf.dir/b95e6e5d2451e159a86d428f4d904fde/Projects/FreeRTOS/CLI/Common/main.c.obj: \
+ C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\Projects\FreeRTOS\CLI\Common\main.c \
+ C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\Libs\uwb-stack\libs\qosal\include/qos.h \
+ C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\Libs\uwb-stack\libs\qosal\include/qerr.h \
+ c:\ev-wireless-charging-alignment-system\dw3_qm33_sdk_1.1.1\sdk\firmware\dw3_qm33_sdk_1.1.1\src\boards\inc\thisboard.h \
+ c:\ev-wireless-charging-alignment-system\dw3_qm33_sdk_1.1.1\sdk\firmware\dw3_qm33_sdk_1.1.1\src\eventmanager\eventmanager.h \
+ c:\gnutoolsarmforembedded\gcc-arm-none-eabi-10.3-2021.10\bin\lib\gcc\arm-none-eabi\10.3.1\include\stdint.h \
+ c:\gnutoolsarmforembedded\gcc-arm-none-eabi-10.3-2021.10\bin\arm-none-eabi\include\stdint.h \
+ c:\gnutoolsarmforembedded\gcc-arm-none-eabi-10.3-2021.10\bin\arm-none-eabi\include\machine\_default_types.h \
+ c:\gnutoolsarmforembedded\gcc-arm-none-eabi-10.3-2021.10\bin\arm-none-eabi\include\sys\features.h \
+ c:\gnutoolsarmforembedded\gcc-arm-none-eabi-10.3-2021.10\bin\arm-none-eabi\include\_newlib_version.h \
+ c:\gnutoolsarmforembedded\gcc-arm-none-eabi-10.3-2021.10\bin\arm-none-eabi\include\sys\_intsup.h \
+ c:\gnutoolsarmforembedded\gcc-arm-none-eabi-10.3-2021.10\bin\arm-none-eabi\include\sys\_stdint.h \
+ c:\gnutoolsarmforembedded\gcc-arm-none-eabi-10.3-2021.10\bin\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h \
+ c:\ev-wireless-charging-alignment-system\dw3_qm33_sdk_1.1.1\sdk\firmware\dw3_qm33_sdk_1.1.1\src\apps\src\common\app\common\app.h \
+ C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\Src\Helpers\Inc/deca_error.h \
+ C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\Src\Helpers\Inc/circular_buffer.h \
+ c:\ev-wireless-charging-alignment-system\dw3_qm33_sdk_1.1.1\sdk\firmware\dw3_qm33_sdk_1.1.1\src\apps\src\common\controltask\controltask.h \
+ c:\ev-wireless-charging-alignment-system\dw3_qm33_sdk_1.1.1\sdk\firmware\dw3_qm33_sdk_1.1.1\src\hal\inc\hal_error.h \
+ c:\ev-wireless-charging-alignment-system\dw3_qm33_sdk_1.1.1\sdk\firmware\dw3_qm33_sdk_1.1.1\src\apps\src\common\flushtask\flushtask.h \
+ c:\ev-wireless-charging-alignment-system\dw3_qm33_sdk_1.1.1\sdk\firmware\dw3_qm33_sdk_1.1.1\src\apps\src\common\defaulttask\defaulttask.h \
+ c:\gnutoolsarmforembedded\gcc-arm-none-eabi-10.3-2021.10\bin\lib\gcc\arm-none-eabi\10.3.1\include\stddef.h

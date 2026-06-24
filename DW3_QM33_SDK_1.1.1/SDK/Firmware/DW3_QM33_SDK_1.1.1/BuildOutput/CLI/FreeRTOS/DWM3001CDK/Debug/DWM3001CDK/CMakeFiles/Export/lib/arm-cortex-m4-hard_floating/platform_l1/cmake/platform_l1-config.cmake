@@ -55,9 +55,9 @@ endif()
 add_library(platform_l1 STATIC IMPORTED)
 
 set_target_properties(platform_l1 PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/Boards/Src/DWM3001CDK/../Common_OTP;E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/Boards/Src/DWM3001CDK/../Common"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/Boards/Src/DWM3001CDK/../Common_OTP;C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/Boards/Src/DWM3001CDK/../Common"
   INTERFACE_LINK_LIBRARIES "Helpers;uwbstack_bundle"
-  INTERFACE_SOURCES "E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/Boards/Src/DWM3001CDK/platform_l1_config.c;E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/Boards/Src/DWM3001CDK/../Common/helper_platform_l1_config.c"
+  INTERFACE_SOURCES "C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/Boards/Src/DWM3001CDK/platform_l1_config.c;C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/Boards/Src/DWM3001CDK/../Common/helper_platform_l1_config.c"
 )
 
 if(CMAKE_VERSION VERSION_LESS 3.1.0)

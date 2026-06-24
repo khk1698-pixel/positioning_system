@@ -1,4 +1,4 @@
-# Install script for directory: E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/OSAL/Src/FreeRTOS
+# Install script for directory: C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/OSAL/Src/FreeRTOS
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -41,7 +41,7 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/arm-cortex-m4-hard_floating/OSAL/cmake/OSAL-config.cmake")
     file(DIFFERENT EXPORT_FILE_CHANGED FILES
          "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/arm-cortex-m4-hard_floating/OSAL/cmake/OSAL-config.cmake"
-         "E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/BuildOutput/CLI/FreeRTOS/DWM3001CDK/Debug/OSAL/CMakeFiles/Export/lib/arm-cortex-m4-hard_floating/OSAL/cmake/OSAL-config.cmake")
+         "C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/BuildOutput/CLI/FreeRTOS/DWM3001CDK/Debug/OSAL/CMakeFiles/Export/lib/arm-cortex-m4-hard_floating/OSAL/cmake/OSAL-config.cmake")
     if(EXPORT_FILE_CHANGED)
       file(GLOB OLD_CONFIG_FILES "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/arm-cortex-m4-hard_floating/OSAL/cmake/OSAL-config-*.cmake")
       if(OLD_CONFIG_FILES)
@@ -50,12 +50,12 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
       endif()
     endif()
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/arm-cortex-m4-hard_floating/OSAL/cmake" TYPE FILE FILES "E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/BuildOutput/CLI/FreeRTOS/DWM3001CDK/Debug/OSAL/CMakeFiles/Export/lib/arm-cortex-m4-hard_floating/OSAL/cmake/OSAL-config.cmake")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/arm-cortex-m4-hard_floating/OSAL/cmake" TYPE FILE FILES "C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/BuildOutput/CLI/FreeRTOS/DWM3001CDK/Debug/OSAL/CMakeFiles/Export/lib/arm-cortex-m4-hard_floating/OSAL/cmake/OSAL-config.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/BuildOutput/CLI/FreeRTOS/DWM3001CDK/Debug/OSAL/qosal/cmake_install.cmake")
+  include("C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/BuildOutput/CLI/FreeRTOS/DWM3001CDK/Debug/OSAL/qosal/cmake_install.cmake")
 
 endif()
 

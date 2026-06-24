@@ -56,7 +56,7 @@ add_library(qosal_itf INTERFACE IMPORTED)
 
 set_target_properties(qosal_itf PROPERTIES
   INTERFACE_COMPILE_DEFINITIONS "QOSAL_ENABLED"
-  INTERFACE_INCLUDE_DIRECTORIES "E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Libs/uwb-stack/libs/qosal/include;E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Libs/uwb-stack/libs/qosal/include/freertos"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Libs/uwb-stack/libs/qosal/include;C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Libs/uwb-stack/libs/qosal/include/freertos"
 )
 
 if(CMAKE_VERSION VERSION_LESS 3.0.0)

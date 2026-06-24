@@ -1225,7 +1225,7 @@ void fira_cmd_set_height(const char *arg)
     reporter_instance.print(msg, len);
 }
 
-
+void fira_save_params(void)
 {
     fira_param_t *fira_params = get_fira_config();
 

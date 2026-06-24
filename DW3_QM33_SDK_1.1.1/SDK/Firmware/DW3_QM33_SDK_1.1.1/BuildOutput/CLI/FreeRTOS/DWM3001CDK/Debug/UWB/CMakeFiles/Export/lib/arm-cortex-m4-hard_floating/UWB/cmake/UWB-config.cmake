@@ -55,7 +55,7 @@ endif()
 add_library(UWB STATIC IMPORTED)
 
 set_target_properties(UWB PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/UWB/Inc"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/UWB/Inc"
   INTERFACE_LINK_LIBRARIES "qosal;uwbdriver;ProjectDefinition;qhal;uwbstack_bundle"
   INTERFACE_LINK_OPTIONS "-Wl,--undefined=crypto_init"
 )

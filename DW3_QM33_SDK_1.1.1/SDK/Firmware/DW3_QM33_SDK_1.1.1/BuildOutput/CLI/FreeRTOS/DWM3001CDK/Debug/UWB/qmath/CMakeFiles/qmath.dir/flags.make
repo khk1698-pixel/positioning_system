@@ -4,7 +4,7 @@
 # compile C with C:/GnuToolsArmForEmbedded/gcc-arm-none-eabi-10.3-2021.10/bin/bin/arm-none-eabi-gcc.exe
 C_DEFINES = -DCLI_BUILD -DUSE_USB_ENUM_WORKAROUND
 
-C_INCLUDES = -IE:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\Libs\uwb-stack\libs\qmath\include
+C_INCLUDES = -IC:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\Libs\uwb-stack\libs\qmath\include
 
 C_FLAGS = -mcpu=cortex-m4        -mfpu=fpv4-sp-d16        -mfloat-abi=hard        -mthumb        -specs=nano.specs        -specs=nosys.specs        -fdata-sections        -ffunction-sections        -std=c11        -Wall        -DNRF52833_XXAA        -Werror     -DBOARD_CUSTOM     -DUSB_ENABLE     -DCONFIG_GPIO_AS_PINRESET -g3 -g   -Os
 

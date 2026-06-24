@@ -55,7 +55,7 @@ endif()
 add_library(qmath STATIC IMPORTED)
 
 set_target_properties(qmath PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Libs/uwb-stack/libs/qmath/include"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Libs/uwb-stack/libs/qmath/include"
 )
 
 # Load information for each installed configuration.

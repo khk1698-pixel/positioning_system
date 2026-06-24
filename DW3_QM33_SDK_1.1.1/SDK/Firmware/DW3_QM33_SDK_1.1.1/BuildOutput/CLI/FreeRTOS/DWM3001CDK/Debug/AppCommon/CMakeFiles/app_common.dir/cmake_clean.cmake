@@ -1,8 +1,8 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/app_common.dir/2bbc14e0fcafc7cf0d68c381c749dacc/DW3_QM33_SDK_1.1.1/Src/Boards/Src/Common/helper_platform_l1_config.c.obj"
-  "CMakeFiles/app_common.dir/2bbc14e0fcafc7cf0d68c381c749dacc/DW3_QM33_SDK_1.1.1/Src/Boards/Src/Common/helper_platform_l1_config.c.obj.d"
-  "CMakeFiles/app_common.dir/2bbc14e0fcafc7cf0d68c381c749dacc/DW3_QM33_SDK_1.1.1/Src/Boards/Src/DWM3001CDK/platform_l1_config.c.obj"
-  "CMakeFiles/app_common.dir/2bbc14e0fcafc7cf0d68c381c749dacc/DW3_QM33_SDK_1.1.1/Src/Boards/Src/DWM3001CDK/platform_l1_config.c.obj.d"
+  "CMakeFiles/app_common.dir/2885424c83dca92c0555739a68d1737f/Boards/Src/DWM3001CDK/platform_l1_config.c.obj"
+  "CMakeFiles/app_common.dir/2885424c83dca92c0555739a68d1737f/Boards/Src/DWM3001CDK/platform_l1_config.c.obj.d"
+  "CMakeFiles/app_common.dir/817c38548510a88e1bedcfd92c4ecf06/Src/Common/helper_platform_l1_config.c.obj"
+  "CMakeFiles/app_common.dir/817c38548510a88e1bedcfd92c4ecf06/Src/Common/helper_platform_l1_config.c.obj.d"
   "CMakeFiles/app_common.dir/app/common/app.c.obj"
   "CMakeFiles/app_common.dir/app/common/app.c.obj.d"
   "CMakeFiles/app_common.dir/cmd/cmd.c.obj"

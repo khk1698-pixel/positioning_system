@@ -1,4 +1,4 @@
-# Install script for directory: E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/Apps/Src/fira
+# Install script for directory: C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/Apps/Src/fira
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

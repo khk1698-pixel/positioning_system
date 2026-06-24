@@ -55,7 +55,7 @@ endif()
 add_library(OS STATIC IMPORTED)
 
 set_target_properties(OS PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/OS/FreeRTOS/../../../SDK_BSP/Nordic/SDK_17_1_0/external/freertos/source/include;E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/OS/FreeRTOS/../../../SDK_BSP/Nordic/SDK_17_1_0/external/freertos/source/../portable/GCC/nrf52;E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/OS/FreeRTOS/../../../SDK_BSP/Nordic/SDK_17_1_0/external/freertos/source/../portable/CMSIS/nrf52"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/OS/FreeRTOS/../../../SDK_BSP/Nordic/SDK_17_1_0/external/freertos/source/include;C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/OS/FreeRTOS/../../../SDK_BSP/Nordic/SDK_17_1_0/external/freertos/source/../portable/GCC/nrf52;C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/OS/FreeRTOS/../../../SDK_BSP/Nordic/SDK_17_1_0/external/freertos/source/../portable/CMSIS/nrf52"
   INTERFACE_LINK_LIBRARIES "SDK"
 )
 

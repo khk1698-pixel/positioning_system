@@ -55,7 +55,7 @@ endif()
 add_library(Config STATIC IMPORTED)
 
 set_target_properties(Config PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/AppConfig/Inc"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/AppConfig/Inc"
   INTERFACE_LINK_LIBRARIES "UWB"
 )
 

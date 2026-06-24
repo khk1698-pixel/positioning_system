@@ -56,10 +56,10 @@ RM = C:\ncs\toolchains\cf2149caf2\opt\bin\cmake.exe -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\Projects\FreeRTOS\CLI\DWM3001CDK
+CMAKE_SOURCE_DIR = C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\Projects\FreeRTOS\CLI\DWM3001CDK
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug
+CMAKE_BINARY_DIR = C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -131,14 +131,14 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(CMAKE_COMMAND) -E cmake_progress_start E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug\CMakeFiles E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug\qplatform\\CMakeFiles\progress.marks
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 qplatform/all
-	$(CMAKE_COMMAND) -E cmake_progress_start E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug\CMakeFiles 0
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(CMAKE_COMMAND) -E cmake_progress_start C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug\CMakeFiles C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug\qplatform\\CMakeFiles\progress.marks
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 qplatform/all
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug\CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 qplatform/clean
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 qplatform/clean
 .PHONY : clean
 
 # The main clean target
@@ -147,22 +147,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 qplatform/preinstall
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 qplatform/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 qplatform/preinstall
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 qplatform/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles\Makefile.cmake 1
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles\Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 qplatform/CMakeFiles/qplatform.dir/rule:
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 qplatform/CMakeFiles/qplatform.dir/rule
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 qplatform/CMakeFiles/qplatform.dir/rule
 .PHONY : qplatform/CMakeFiles/qplatform.dir/rule
 
 # Convenience name for target.
@@ -171,12 +171,12 @@ qplatform: qplatform/CMakeFiles/qplatform.dir/rule
 
 # fast build rule for target.
 qplatform/fast:
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform.dir\build.make qplatform/CMakeFiles/qplatform.dir/build
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform.dir\build.make qplatform/CMakeFiles/qplatform.dir/build
 .PHONY : qplatform/fast
 
 # Convenience name for target.
 qplatform/CMakeFiles/qplatform_deca_compat.dir/rule:
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 qplatform/CMakeFiles/qplatform_deca_compat.dir/rule
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 qplatform/CMakeFiles/qplatform_deca_compat.dir/rule
 .PHONY : qplatform/CMakeFiles/qplatform_deca_compat.dir/rule
 
 # Convenience name for target.
@@ -185,7 +185,7 @@ qplatform_deca_compat: qplatform/CMakeFiles/qplatform_deca_compat.dir/rule
 
 # fast build rule for target.
 qplatform_deca_compat/fast:
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform_deca_compat.dir\build.make qplatform/CMakeFiles/qplatform_deca_compat.dir/build
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform_deca_compat.dir\build.make qplatform/CMakeFiles/qplatform_deca_compat.dir/build
 .PHONY : qplatform_deca_compat/fast
 
 qm33_qhal_common/src/qplatform.obj: qm33_qhal_common/src/qplatform.c.obj
@@ -193,7 +193,7 @@ qm33_qhal_common/src/qplatform.obj: qm33_qhal_common/src/qplatform.c.obj
 
 # target to build an object file
 qm33_qhal_common/src/qplatform.c.obj:
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform.dir\build.make qplatform/CMakeFiles/qplatform.dir/qm33_qhal_common/src/qplatform.c.obj
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform.dir\build.make qplatform/CMakeFiles/qplatform.dir/qm33_qhal_common/src/qplatform.c.obj
 .PHONY : qm33_qhal_common/src/qplatform.c.obj
 
 qm33_qhal_common/src/qplatform.i: qm33_qhal_common/src/qplatform.c.i
@@ -201,7 +201,7 @@ qm33_qhal_common/src/qplatform.i: qm33_qhal_common/src/qplatform.c.i
 
 # target to preprocess a source file
 qm33_qhal_common/src/qplatform.c.i:
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform.dir\build.make qplatform/CMakeFiles/qplatform.dir/qm33_qhal_common/src/qplatform.c.i
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform.dir\build.make qplatform/CMakeFiles/qplatform.dir/qm33_qhal_common/src/qplatform.c.i
 .PHONY : qm33_qhal_common/src/qplatform.c.i
 
 qm33_qhal_common/src/qplatform.s: qm33_qhal_common/src/qplatform.c.s
@@ -209,7 +209,7 @@ qm33_qhal_common/src/qplatform.s: qm33_qhal_common/src/qplatform.c.s
 
 # target to generate assembly for a file
 qm33_qhal_common/src/qplatform.c.s:
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform.dir\build.make qplatform/CMakeFiles/qplatform.dir/qm33_qhal_common/src/qplatform.c.s
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform.dir\build.make qplatform/CMakeFiles/qplatform.dir/qm33_qhal_common/src/qplatform.c.s
 .PHONY : qm33_qhal_common/src/qplatform.c.s
 
 qm33_qhal_common/src/qplatform_deca_impl.obj: qm33_qhal_common/src/qplatform_deca_impl.c.obj
@@ -217,7 +217,7 @@ qm33_qhal_common/src/qplatform_deca_impl.obj: qm33_qhal_common/src/qplatform_dec
 
 # target to build an object file
 qm33_qhal_common/src/qplatform_deca_impl.c.obj:
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform_deca_compat.dir\build.make qplatform/CMakeFiles/qplatform_deca_compat.dir/qm33_qhal_common/src/qplatform_deca_impl.c.obj
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform_deca_compat.dir\build.make qplatform/CMakeFiles/qplatform_deca_compat.dir/qm33_qhal_common/src/qplatform_deca_impl.c.obj
 .PHONY : qm33_qhal_common/src/qplatform_deca_impl.c.obj
 
 qm33_qhal_common/src/qplatform_deca_impl.i: qm33_qhal_common/src/qplatform_deca_impl.c.i
@@ -225,7 +225,7 @@ qm33_qhal_common/src/qplatform_deca_impl.i: qm33_qhal_common/src/qplatform_deca_
 
 # target to preprocess a source file
 qm33_qhal_common/src/qplatform_deca_impl.c.i:
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform_deca_compat.dir\build.make qplatform/CMakeFiles/qplatform_deca_compat.dir/qm33_qhal_common/src/qplatform_deca_impl.c.i
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform_deca_compat.dir\build.make qplatform/CMakeFiles/qplatform_deca_compat.dir/qm33_qhal_common/src/qplatform_deca_impl.c.i
 .PHONY : qm33_qhal_common/src/qplatform_deca_impl.c.i
 
 qm33_qhal_common/src/qplatform_deca_impl.s: qm33_qhal_common/src/qplatform_deca_impl.c.s
@@ -233,7 +233,7 @@ qm33_qhal_common/src/qplatform_deca_impl.s: qm33_qhal_common/src/qplatform_deca_
 
 # target to generate assembly for a file
 qm33_qhal_common/src/qplatform_deca_impl.c.s:
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform_deca_compat.dir\build.make qplatform/CMakeFiles/qplatform_deca_compat.dir/qm33_qhal_common/src/qplatform_deca_impl.c.s
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform_deca_compat.dir\build.make qplatform/CMakeFiles/qplatform_deca_compat.dir/qm33_qhal_common/src/qplatform_deca_impl.c.s
 .PHONY : qm33_qhal_common/src/qplatform_deca_impl.c.s
 
 qm33_qhal_non_zephyr/src/qplatform.obj: qm33_qhal_non_zephyr/src/qplatform.c.obj
@@ -241,7 +241,7 @@ qm33_qhal_non_zephyr/src/qplatform.obj: qm33_qhal_non_zephyr/src/qplatform.c.obj
 
 # target to build an object file
 qm33_qhal_non_zephyr/src/qplatform.c.obj:
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform.dir\build.make qplatform/CMakeFiles/qplatform.dir/qm33_qhal_non_zephyr/src/qplatform.c.obj
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform.dir\build.make qplatform/CMakeFiles/qplatform.dir/qm33_qhal_non_zephyr/src/qplatform.c.obj
 .PHONY : qm33_qhal_non_zephyr/src/qplatform.c.obj
 
 qm33_qhal_non_zephyr/src/qplatform.i: qm33_qhal_non_zephyr/src/qplatform.c.i
@@ -249,7 +249,7 @@ qm33_qhal_non_zephyr/src/qplatform.i: qm33_qhal_non_zephyr/src/qplatform.c.i
 
 # target to preprocess a source file
 qm33_qhal_non_zephyr/src/qplatform.c.i:
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform.dir\build.make qplatform/CMakeFiles/qplatform.dir/qm33_qhal_non_zephyr/src/qplatform.c.i
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform.dir\build.make qplatform/CMakeFiles/qplatform.dir/qm33_qhal_non_zephyr/src/qplatform.c.i
 .PHONY : qm33_qhal_non_zephyr/src/qplatform.c.i
 
 qm33_qhal_non_zephyr/src/qplatform.s: qm33_qhal_non_zephyr/src/qplatform.c.s
@@ -257,7 +257,7 @@ qm33_qhal_non_zephyr/src/qplatform.s: qm33_qhal_non_zephyr/src/qplatform.c.s
 
 # target to generate assembly for a file
 qm33_qhal_non_zephyr/src/qplatform.c.s:
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform.dir\build.make qplatform/CMakeFiles/qplatform.dir/qm33_qhal_non_zephyr/src/qplatform.c.s
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(MAKE) $(MAKESILENT) -f qplatform\CMakeFiles\qplatform.dir\build.make qplatform/CMakeFiles/qplatform.dir/qm33_qhal_non_zephyr/src/qplatform.c.s
 .PHONY : qm33_qhal_non_zephyr/src/qplatform.c.s
 
 # Help Target
@@ -294,6 +294,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /d E:\polytech\uwb\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles\Makefile.cmake 0
+	cd /d C:\EV-Wireless-Charging-Alignment-System\DW3_QM33_SDK_1.1.1\SDK\Firmware\DW3_QM33_SDK_1.1.1\BuildOutput\CLI\FreeRTOS\DWM3001CDK\Debug && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles\Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

@@ -55,7 +55,7 @@ endif()
 add_library(Board STATIC IMPORTED)
 
 set_target_properties(Board PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/Boards/Src/DWM3001CDK/Common;E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/Boards/Src/DWM3001CDK/../../Inc"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/Boards/Src/DWM3001CDK/Common;C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/Boards/Src/DWM3001CDK/../../Inc"
   INTERFACE_LINK_LIBRARIES "app_common;platform_l1;HAL"
 )
 

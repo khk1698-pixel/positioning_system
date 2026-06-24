@@ -56,7 +56,7 @@ add_library(HAL STATIC IMPORTED)
 
 set_target_properties(HAL PROPERTIES
   INTERFACE_COMPILE_DEFINITIONS "USE_DRV_DW3000"
-  INTERFACE_INCLUDE_DIRECTORIES "E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/HAL/Src/nrfx/../../Inc;E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/HAL/Src/nrfx/../../../Boards/Src/DWM3001CDK/Common"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/HAL/Src/nrfx/../../Inc;C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/HAL/Src/nrfx/../../../Boards/Src/DWM3001CDK/Common"
   INTERFACE_LINK_LIBRARIES "UWB;SDK;OSAL;Helpers;Interface"
 )
 

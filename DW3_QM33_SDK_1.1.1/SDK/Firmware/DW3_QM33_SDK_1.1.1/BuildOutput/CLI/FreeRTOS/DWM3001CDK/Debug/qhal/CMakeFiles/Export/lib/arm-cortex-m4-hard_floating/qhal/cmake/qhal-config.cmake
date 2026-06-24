@@ -55,7 +55,7 @@ endif()
 add_library(qhal STATIC IMPORTED)
 
 set_target_properties(qhal PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Libs/uwb-stack/libs/qhal/include;E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Libs/uwb-stack/libs/qhal/src/nrfx"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Libs/uwb-stack/libs/qhal/include;C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Libs/uwb-stack/libs/qhal/src/nrfx"
   INTERFACE_LINK_LIBRARIES "qosal;HAL"
 )
 

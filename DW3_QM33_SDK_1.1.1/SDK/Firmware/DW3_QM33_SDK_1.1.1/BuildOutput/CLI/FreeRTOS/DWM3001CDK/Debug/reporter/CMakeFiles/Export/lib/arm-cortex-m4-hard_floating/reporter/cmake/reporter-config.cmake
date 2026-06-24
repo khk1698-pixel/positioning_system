@@ -55,7 +55,7 @@ endif()
 add_library(reporter STATIC IMPORTED)
 
 set_target_properties(reporter PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/Apps/Src/reporter/./;E:/polytech/uwb/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/Apps/Src/reporter/usb_reporter"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/Apps/Src/reporter/./;C:/EV-Wireless-Charging-Alignment-System/DW3_QM33_SDK_1.1.1/SDK/Firmware/DW3_QM33_SDK_1.1.1/Src/Apps/Src/reporter/usb_reporter"
   INTERFACE_LINK_LIBRARIES "app_common;HAL;SDK"
 )
 

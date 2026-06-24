@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/platform_l1.dir/2bbc14e0fcafc7cf0d68c381c749dacc/DW3_QM33_SDK_1.1.1/Src/Boards/Src/Common/helper_platform_l1_config.c.obj"
-  "CMakeFiles/platform_l1.dir/2bbc14e0fcafc7cf0d68c381c749dacc/DW3_QM33_SDK_1.1.1/Src/Boards/Src/Common/helper_platform_l1_config.c.obj.d"
+  "CMakeFiles/platform_l1.dir/2885424c83dca92c0555739a68d1737f/Boards/Src/Common/helper_platform_l1_config.c.obj"
+  "CMakeFiles/platform_l1.dir/2885424c83dca92c0555739a68d1737f/Boards/Src/Common/helper_platform_l1_config.c.obj.d"
   "CMakeFiles/platform_l1.dir/platform_l1_config.c.obj"
   "CMakeFiles/platform_l1.dir/platform_l1_config.c.obj.d"
   "libplatform_l1.a"
